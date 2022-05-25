@@ -1,46 +1,93 @@
-# Getting Started with Create React App
+# Roletapp — API dokumentacija
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**sadržaj:**
 
-## Available Scripts
+# Schedule
 
-In the project directory, you can run:
+**ScheduleObj**
 
-### `yarn start`
+```json
+{
+	"vrijeme": "7:00"
+	"akcija": {
+		"roleta": 1.0,
+		"svjetlo": false,
+	}
+}
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+[0, 7] = [pon, ned] tj predstavlja broj dana u tjednu
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Trebalo bi moći spremiti listu ovakvih rasporeda i onda kada dođe to vrijeme u odabranom danu postaviti uređaje na te vrijednosti.
 
-### `yarn test`
+`active` dali se trenutno primjenjuje ili ne
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+# Jednostavno paljenje - gašenje [WebSockets]
 
-### `yarn build`
+**odmah po spajanju treba poslati inicijalno stanje**
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```json
+{
+	"event": "inicijalizacija",
+	"svjetlo": false,
+	"rotelta": 0.5,
+	"zakazano": ScheduleObj
+}
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Svjetlo
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### app šalje
 
-### `yarn eject`
+```json
+{"event": "upali_svjetlo"} 
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```json
+{"event": "ugali_svjetlo"} 
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### server šalje:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```json
+{"event": "svjetlo", "content": true} 
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+- server odgovara postavljenim stanjem
+    - true - svjetlo je upaljeno
+    - false - svjetlo je ugašeno
 
-## Learn More
+## Roleta
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### app šalje
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```json
+{"event": "postavi_roletu", "content": 0.5} 
+```
+
+### server šalje
+
+```json
+{"event": "roleta", "content": 0.1} 
+```
+
+- server odgovara postavljenim stanjem
+    - true - rolta podignuta
+    - false - roleta spuštena
+
+# Odgođena akcija
+
+### app šalje:
+
+```json
+{"event": "zakazi", "akcija": ScheduleObj}
+```
+
+### **server šalje:**
+
+```json
+{"event": "zakazano", "akcija": ScheduleObj} 
+```
+
+- vraća akciju koja je zakazana da se desi u budućnosti
+    - e.g. u 7:00 roleta će se podići
