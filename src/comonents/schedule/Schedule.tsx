@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react'
-import { Button, DatePicker, Select, Slider, Space, Switch, TimePicker } from 'antd';
+import { Button, DatePicker, Slider, Space, Switch, TimePicker } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import moment from 'moment';
 

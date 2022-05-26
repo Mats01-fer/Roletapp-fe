@@ -1,18 +1,44 @@
-import React, { FC, useState } from 'react'
+import React, { FC, useEffect, useMemo, useState } from 'react'
 import { CalendarOutlined } from '@ant-design/icons';
 import { Button, Slider, Space, Switch } from 'antd';
 import Schedule from '../schedule/Schedule';
+import { LightRepositoryMock } from '../../repository/light/lightRepositoryMock';
+import { BlindsRepositoryMock } from '../../repository/blinds/lightRepositoryMock';
 
 
 const Home: FC<{}> = () => {
+  const lightRepo = useMemo(() => new LightRepositoryMock(), []);
+  const blindsRepo = useMemo(() => new BlindsRepositoryMock(), []);
 
   const [showScheduler, setShowScheduler] = useState(false);
+  const [roleta, setRoleta] = useState(0);
+  const [svjetlo, setSvjetlo] = useState(false);
 
-  const sendSchedule = (data: any) => { }
+  const sendSchedule = (data: any) => {
+    // scheduleRepo.schedule(data);
+  }
 
-  const sendRoleta = (value: number) => { }
+  const sendRoleta = (value: number) => {
+    blindsRepo.send({ roleta: value });
+  }
 
-  const sendSvjetlo = (state: boolean) => { }
+  const sendSvjetlo = (state: boolean) => {
+    lightRepo.send({ svjetlo: state });
+  }
+
+
+  useEffect(() => {
+    lightRepo.addListener(({ svjetlo }) => {
+      setSvjetlo(svjetlo);
+    })
+
+    blindsRepo.addListener(({ roleta }) => {
+      setRoleta(roleta);
+    })
+  }, [blindsRepo, lightRepo])
+
+
+
 
   return (
     <div className="App">
@@ -20,7 +46,7 @@ const Home: FC<{}> = () => {
       <div className='roleta'>
         <Space direction='horizontal' className='datetime_picker' >
           <span>Roleta:</span>
-          <Slider defaultValue={30} min={0} max={100} onChange={sendRoleta} style={{ width: 150 }} />
+          <Slider value={roleta} min={0} max={100} onChange={sendRoleta} style={{ width: 150 }} />
         </Space>
       </div>
 
@@ -37,7 +63,9 @@ const Home: FC<{}> = () => {
       <div className='svjetlo'>
         <Space direction='horizontal' className='datetime_picker' >
           <span>Svjetlo:</span>
-          <Switch defaultChecked onChange={sendSvjetlo} />
+          <Switch
+            checked={svjetlo}
+            onChange={sendSvjetlo} />
         </Space>
       </div>
 
