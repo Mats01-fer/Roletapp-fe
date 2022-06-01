@@ -11,6 +11,6 @@ export interface LightRepository {
   removeListener(id: string): boolean,
 
   // sends new object and waits for the returned confirmed state
-  send(lightObj: LightObj): Promise<LightObj>,
+  send(lightObj: LightObj): void,
 }
 

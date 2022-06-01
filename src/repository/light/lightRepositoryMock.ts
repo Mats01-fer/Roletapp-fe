@@ -29,8 +29,10 @@ export class LightRepositoryMock implements LightRepository {
     return true;
   }
 
-  async send(lightObj: LightObj): Promise<LightObj> {
+  async send(lightObj: LightObj) {
     await wait(1000);
-    return {...lightObj};
+    for(const listener of Object.values(this.listeners)) {
+      listener(lightObj)
+    }
   }
 }
