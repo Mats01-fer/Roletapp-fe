@@ -3,7 +3,7 @@ import { CalendarOutlined } from '@ant-design/icons';
 import { Button, Slider, Space, Switch } from 'antd';
 import Schedule from '../schedule/Schedule';
 import { LightRepositoryMock } from '../../repository/light/lightRepositoryMock';
-import { BlindsRepositoryMock } from '../../repository/blinds/lightRepositoryMock';
+import { BlindsRepositoryMock } from '../../repository/blinds/blindsRepositoryMock';
 
 
 const Home: FC<{}> = () => {
