@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useMemo, useState } from 'react'
+import React, { FC, useEffect, useMemo, useRef, useState } from 'react'
 import { CalendarOutlined } from '@ant-design/icons';
 import { Button, Slider, Space, Switch } from 'antd';
 import Schedule from '../schedule/Schedule';
@@ -10,9 +10,12 @@ const Home: FC<{}> = () => {
   const lightRepo = useMemo(() => new LightRepositoryMock(), []);
   const blindsRepo = useMemo(() => new BlindsRepositoryMock(), []);
 
+  const timeOutRef = useRef<NodeJS.Timeout>();
+
   const [showScheduler, setShowScheduler] = useState(false);
   const [roleta, setRoleta] = useState(0);
   const [svjetlo, setSvjetlo] = useState(false);
+  const [lastRoletaSync, setLastRoletaSync] = useState(0);
 
   const sendSchedule = (data: any) => {
     // scheduleRepo.schedule(data);
@@ -33,9 +36,25 @@ const Home: FC<{}> = () => {
     })
 
     blindsRepo.addListener(({ roleta }) => {
+      console.log('roleta', roleta);
+      clearTimeout(timeOutRef.current);
       setRoleta(roleta);
+      setLastRoletaSync(roleta);
     })
   }, [blindsRepo, lightRepo])
+
+
+  const onFinishAdjust = (value: number) => {
+    clearTimeout(timeOutRef.current);
+    let timeOutThing = setTimeout(() => {
+      setRoleta(lastRoletaSync)
+    }, 5000);
+    timeOutRef.current = timeOutThing;
+    setRoleta(value);
+    sendRoleta(value);
+
+
+  }
 
 
 
@@ -44,9 +63,17 @@ const Home: FC<{}> = () => {
     <div className="App">
 
       <div className='roleta'>
-        <Space direction='horizontal' className='datetime_picker' >
-          <span>Roleta:</span>
-          <Slider value={roleta} min={0} max={100} onChange={sendRoleta} style={{ width: 150 }} />
+        <Space direction='horizontal' >
+          <div className="blinds_container">
+            <div className="blinds" style={{ marginTop: -(200 - roleta * 2) }}>
+              {Array.from(new Array(7)).map((_, index) =>
+                <img src="/assets/blindBlade.svg" alt="roleta" className='rotelta_blade' />
+              )}
+
+            </div>
+          </div>
+          <Slider reverse={true} vertical={true} value={roleta} min={0} max={100} onChange={(val) => setRoleta(val)} style={{ width: 10, height: 200 }} onAfterChange={onFinishAdjust} />
+
         </Space>
       </div>
 
@@ -62,11 +89,9 @@ const Home: FC<{}> = () => {
 
       <div className='svjetlo'>
         <Space direction='horizontal' className='datetime_picker' >
-          <span>Svjetlo:</span>
-          <Switch
-            checked={svjetlo}
-            onChange={sendSvjetlo} />
+
           <div className="bubl_btn"
+            onClick={() => { sendSvjetlo(!svjetlo) }}
             style={{ ...!svjetlo && { backgroundColor: '#b6d7ea' } }}
           >
             <img src="/assets/bulb.svg" alt="svjetlo" style={{ height: '80%' }} />
