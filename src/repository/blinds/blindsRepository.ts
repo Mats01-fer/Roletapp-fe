@@ -11,6 +11,6 @@ export interface BlindsRepository {
   removeListener(id: string): boolean,
 
   // sends new object and waits for the returned confirmed state
-  send(blindsObj: BlindsObj): Promise<BlindsObj>,
+  send(blindsObj: BlindsObj): void,
 }
 

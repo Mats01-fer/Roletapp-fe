@@ -29,8 +29,10 @@ export class BlindsRepositoryMock implements BlindsRepository {
     return true;
   }
 
-  async send(blindsObj: BlindsObj): Promise<BlindsObj> {
+  async send(blindsObj: BlindsObj) {
     await wait(1000);
-    return {...blindsObj};
+    for(const listener of Object.values(this.listeners)) {
+      listener(blindsObj)
+    }
   }
 }
