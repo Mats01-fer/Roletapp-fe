@@ -66,8 +66,14 @@ const Home: FC<{}> = () => {
           <Switch
             checked={svjetlo}
             onChange={sendSvjetlo} />
+          <div className="bubl_btn"
+            style={{ ...!svjetlo && { backgroundColor: '#b6d7ea' } }}
+          >
+            <img src="/assets/bulb.svg" alt="svjetlo" style={{ height: '80%' }} />
+
+          </div>
         </Space>
-      </div>
+      </div >
 
 
 
@@ -84,7 +90,7 @@ const Home: FC<{}> = () => {
           </div>
         </div>
       }
-    </div>
+    </div >
   )
 }
 export default Home;

@@ -85,3 +85,15 @@
   justify-content: space-evenly;
   box-shadow: 0px 0px 10px black;
 }
+
+.bubl_btn {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: #48ACE4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+}
