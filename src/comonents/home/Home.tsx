@@ -60,7 +60,11 @@ const Home: FC<{}> = () => {
 
 
   return (
-    <div className="App">
+    <div className="App"
+      style={{
+        height: window.innerHeight - 1,
+      }}
+    >
 
       <div className='roleta'>
         <Space direction='horizontal' >
@@ -80,7 +84,7 @@ const Home: FC<{}> = () => {
 
 
       <div className='gutter'>
-        <Button onClick={() => setShowScheduler(true)}>
+        <Button onClick={() => setShowScheduler(true)} className="calendar_btn">
           <CalendarOutlined />
         </Button>
       </div>
@@ -88,16 +92,17 @@ const Home: FC<{}> = () => {
 
 
       <div className='svjetlo'>
-        <Space direction='horizontal' className='datetime_picker' >
+        <div className="svjetlo_roundrect">
+          <div className="bulb_btn_wrapper">
+            <div className="bubl_btn"
+              onClick={() => { sendSvjetlo(!svjetlo) }}
+              style={{ ...!svjetlo && { backgroundColor: '#b6d7ea' } }}
+            >
+              <img src="/assets/bulb.svg" alt="svjetlo" style={{ height: 100 }} />
 
-          <div className="bubl_btn"
-            onClick={() => { sendSvjetlo(!svjetlo) }}
-            style={{ ...!svjetlo && { backgroundColor: '#b6d7ea' } }}
-          >
-            <img src="/assets/bulb.svg" alt="svjetlo" style={{ height: '80%' }} />
-
+            </div>
           </div>
-        </Space>
+        </div>
       </div >
 
 
