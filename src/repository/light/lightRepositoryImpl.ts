@@ -19,6 +19,7 @@ export class LightRepositoryImpl implements LightRepository {
     this.unsubscribeHolder = subscribe(SubscribeTopics.LIGHT, {
       next: (data: AWSResponse) => {
         if(!data.value.state.reported) return
+        if(!data.value.state.reported.light) return
 
         this.notifyListeners(data.value.state.reported as LightObj)
       },
@@ -27,8 +28,6 @@ export class LightRepositoryImpl implements LightRepository {
   }
 
   private notifyListeners(lightObj: LightObj) {
-    if(!lightObj.light) return
-
     Object.values(this.listeners).forEach(listener => listener(lightObj))
   }
 

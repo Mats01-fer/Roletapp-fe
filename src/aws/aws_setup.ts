@@ -59,6 +59,8 @@ Amplify.PubSub.subscribe('$aws/things/LampActuator/shadow/get').subscribe({
 });
 
 export function subscribe(topic: SubscribeTopics, listener: SupscriptionHandler): UnsubscribeHolder {
+  console.log('subscribe', topic);
+
   return Amplify.PubSub.subscribe(topic).subscribe(listener);
 }
 
