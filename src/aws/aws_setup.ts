@@ -1,9 +1,40 @@
 import { Amplify } from 'aws-amplify';
 import { AWSIoTProvider } from '@aws-amplify/pubsub/lib/Providers';
+import { LightObj } from '../models/LightObj';
+import { PublishTopics, SubscribeTopics } from '../constants';
 
-export interface SupscriptionHandler<T> {
-  next(data: T): void,
-  error(error: Error): void,
+export interface UnsubscribeHolder {
+  unsubscribe(): void
+}
+
+export type AWSError = {
+  code: number,
+  message: string,
+  timestamp: Date,
+  clientToken?: string
+}
+
+export type AWSResponse = {
+  provider: AWSIoTProvider,
+  value: {
+    state: {
+      desired?: {
+        lamp?: boolean,
+        blinds?: number,
+        light?: number
+      },
+      reported?: {
+        lamp?: boolean,
+        blinds?: number,
+        light?: number
+      },
+    }
+  }
+}
+
+export interface SupscriptionHandler {
+  next(data: AWSResponse): void,
+  error(error: AWSError): void,
   close?(): void
 }
 
@@ -27,43 +58,10 @@ Amplify.PubSub.subscribe('$aws/things/LampActuator/shadow/get').subscribe({
   close: () => console.log('Done'),
 });
 
-Amplify.PubSub.subscribe('$aws/things/LampActuator/shadow/get/accepted').subscribe({
-  next: (data: any) => console.log('Message received', data),
-  error: (error: any) => console.error(error),
-  close: () => console.log('Done'),
-});
-
-Amplify.PubSub.subscribe('$aws/things/LampActuator/shadow/update').subscribe({
-  next: (data: any) => console.log('Message received', data),
-  error: (error: any) => console.error(error),
-  close: () => console.log('Done'),
-});
-
-Amplify.PubSub.subscribe('$aws/things/LampActuator/shadow/update/delta').subscribe({
-  next: (data: any) => console.log('Message received', data),
-  error: (error: any) => console.error(error),
-  close: () => console.log('Done'),
-});
-
-Amplify.PubSub.subscribe('$aws/things/LampActuator/shadow/update/accepted').subscribe({
-  next: (data: any) => console.log('Message received', data),
-  error: (error: any) => console.error(error),
-  close: () => console.log('Done'),
-});
-
-console.log('aws1');
-
-export function a() {
-  console.log('aws2');
-
+export function subscribe(topic: SubscribeTopics, listener: SupscriptionHandler): UnsubscribeHolder {
+  return Amplify.PubSub.subscribe(topic).subscribe(listener);
 }
 
-// function subscribe(topic: string, listener: SupscriptionHandler<T>) {
-//   Amplify.PubSub.subscribe('real-time-weather').subscribe({
-//     next: data => console.log('Message received', data),
-//     error: error => console.error(error),
-//     close: () => console.log('Done'),
-//   });
-// }
-
-export default a;
+export function publish<T>(topic: PublishTopics, data: T): Promise<void> {
+  return Amplify.PubSub.publish(topic, { state: { desired: data } });
+}

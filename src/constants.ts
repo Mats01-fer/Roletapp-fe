@@ -4,10 +4,13 @@ export const initialState = {
   }
 }
 
-export enum Events {
-  LIGHT = "svjetlo",
-  BLINDS = "roleta",
-  INIT = "init",
-  SCHEDULE = "zakazi",
+export enum PublishTopics {
+  BLINDS = '$aws/things/BlindsActuator/shadow/update',
+  LAMP = '$aws/things/LampActuator/shadow/update'
 }
 
+export enum SubscribeTopics {
+  BLINDS = '$aws/things/BlindsActuator/shadow/update/accepted',
+  LAMP = '$aws/things/LampActuator/shadow/update/accepted',
+  LIGHT = '$aws/things/LightSensor/shadow/update/accepted'
+}
