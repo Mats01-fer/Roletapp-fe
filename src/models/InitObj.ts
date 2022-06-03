@@ -1,7 +1,5 @@
 import { BlindsObj } from "./BlindsObj";
+import { LampObj } from "./LampObj";
 import { LightObj } from "./LightObj";
-import { ScheduleObj } from "./ScheduleObj";
 
-export type InitObj = LightObj & BlindsObj & {
-  zakazno: ScheduleObj
-}
+export type InitObj = LightObj & BlindsObj & LampObj;

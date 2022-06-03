@@ -1,5 +1,3 @@
-import { LightObj } from "../../models/LightObj";
-import { wait } from "../../util";
 import { LightListener, LightRepository } from "./lightRepository";
 
 type ListenerStorage = Record<string, LightListener>;
@@ -27,12 +25,5 @@ export class LightRepositoryMock implements LightRepository {
 
     delete this.listeners[id];
     return true;
-  }
-
-  async send(lightObj: LightObj) {
-    await wait(1000);
-    for(const listener of Object.values(this.listeners)) {
-      listener(lightObj)
-    }
   }
 }

@@ -1,14 +1,13 @@
-import React, { FC, useEffect, useMemo, useRef, useState } from 'react'
+import { FC, useEffect, useRef, useState } from 'react'
 import { CalendarOutlined } from '@ant-design/icons';
 import { Button, Slider, Space, Switch } from 'antd';
 import Schedule from '../schedule/Schedule';
-import { LightRepositoryMock } from '../../repository/light/lightRepositoryMock';
-import { BlindsRepositoryMock } from '../../repository/blinds/blindsRepositoryMock';
+import di from '../../di/di';
 
 
 const Home: FC<{}> = () => {
-  const lightRepo = useMemo(() => new LightRepositoryMock(), []);
-  const blindsRepo = useMemo(() => new BlindsRepositoryMock(), []);
+  const lampRepo = di.lampRepository;
+  const blindsRepo = di.blindsRepository;
 
   const timeOutRef = useRef<NodeJS.Timeout>();
 
@@ -22,26 +21,22 @@ const Home: FC<{}> = () => {
   }
 
   const sendRoleta = (value: number) => {
-    blindsRepo.send({ roleta: value });
+    blindsRepo.send({ blinds: value });
   }
 
   const sendSvjetlo = (state: boolean) => {
-    lightRepo.send({ svjetlo: state });
   }
 
 
   useEffect(() => {
-    lightRepo.addListener(({ svjetlo }) => {
-      setSvjetlo(svjetlo);
+    lampRepo.addListener(({ lamp }) => {
+      setSvjetlo(lamp);
     })
 
-    blindsRepo.addListener(({ roleta }) => {
-      console.log('roleta', roleta);
-      clearTimeout(timeOutRef.current);
-      setRoleta(roleta);
-      setLastRoletaSync(roleta);
+    blindsRepo.addListener(({ blinds }) => {
+      setRoleta(blinds);
     })
-  }, [blindsRepo, lightRepo])
+  }, [blindsRepo, lampRepo])
 
 
   const onFinishAdjust = (value: number) => {

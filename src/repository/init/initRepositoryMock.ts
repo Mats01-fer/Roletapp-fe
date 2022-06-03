@@ -11,15 +11,9 @@ export class InitRepositoryMock implements InitRepository {
     await wait(1000);
 
     return {
-      svjetlo: true,
-      roleta: 60,
-      zakazno: {
-        vrijeme: "Wed, 14 Jun 2022 07:00:00 GMT",
-        akcija: {
-          roleta: 100,
-          svjetlo: false,
-        }
-      }
+      lamp: true,
+      blinds: 60,
+      light: 50
     }
   }
 

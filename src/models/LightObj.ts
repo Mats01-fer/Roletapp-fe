@@ -1,3 +1,3 @@
 export type LightObj = {
-  svjetlo: boolean
+  light: number
 }
