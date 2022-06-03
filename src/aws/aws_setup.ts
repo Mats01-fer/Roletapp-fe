@@ -1,6 +1,5 @@
 import { Amplify } from 'aws-amplify';
 import { AWSIoTProvider } from '@aws-amplify/pubsub/lib/Providers';
-import { LightObj } from '../models/LightObj';
 import { PublishTopics, SubscribeTopics } from '../constants';
 
 export interface UnsubscribeHolder {
@@ -52,7 +51,7 @@ Amplify.addPluggable(new AWSIoTProvider({
   aws_pubsub_endpoint: `wss://${process.env.REACT_APP_MQTT_ID}.iot.${process.env.REACT_APP_REGION}.amazonaws.com/mqtt`,
 }));
 
-Amplify.PubSub.subscribe('$aws/things/LampActuator/shadow/get').subscribe({
+Amplify.PubSub.subscribe(Object.values(SubscribeTopics)).subscribe({
   next: (data: any) => console.log('Message received', data),
   error: (error: any) => console.error(error),
   close: () => console.log('Done'),

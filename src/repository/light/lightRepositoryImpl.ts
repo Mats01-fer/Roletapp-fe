@@ -18,6 +18,8 @@ export class LightRepositoryImpl implements LightRepository {
     this.listeners = {};
     this.unsubscribeHolder = subscribe(SubscribeTopics.LIGHT, {
       next: (data: AWSResponse) => {
+        console.log(data);
+
         if(!data.value.state.reported) return
         if(!data.value.state.reported.light) return
 

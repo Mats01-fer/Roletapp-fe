@@ -29,8 +29,6 @@ export class LampRepositoryImpl implements LampRepository {
   }
 
   private notifyListeners(lampObj: LampObj) {
-    console.log(lampObj);
-
     Object.values(this.listeners).forEach(listener => listener(lampObj))
   }
 
