@@ -1,55 +1,33 @@
-import { FC, useEffect, useRef, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { CalendarOutlined } from '@ant-design/icons';
-import { Button, Slider, Space, Switch } from 'antd';
+import { Button } from 'antd';
 import Schedule from '../schedule/Schedule';
 import di from '../../di/di';
+import Lamp from '../lamp/Lamp';
+import Blinds from '../roleta/Roleta';
 
 
 const Home: FC<{}> = () => {
-  const lampRepo = di.lampRepository;
-  const blindsRepo = di.blindsRepository;
+  const lightRepo = di.lightRepository;
 
-  const timeOutRef = useRef<NodeJS.Timeout>();
 
   const [showScheduler, setShowScheduler] = useState(false);
-  const [roleta, setRoleta] = useState(0);
-  const [svjetlo, setSvjetlo] = useState(false);
-  const [lastRoletaSync, setLastRoletaSync] = useState(0);
+
 
   const sendSchedule = (data: any) => {
     // scheduleRepo.schedule(data);
   }
 
-  const sendRoleta = (value: number) => {
-    blindsRepo.send({ blinds: value });
-  }
-
-  const sendSvjetlo = (state: boolean) => {
-  }
-
 
   useEffect(() => {
-    lampRepo.addListener(({ lamp }) => {
-      setSvjetlo(lamp);
-    })
 
-    blindsRepo.addListener(({ blinds }) => {
-      setRoleta(blinds);
-    })
-  }, [blindsRepo, lampRepo])
+    lightRepo.addListener(({ light }) => {
+      console.log('light', light);
+    });
+
+  }, [lightRepo])
 
 
-  const onFinishAdjust = (value: number) => {
-    clearTimeout(timeOutRef.current);
-    let timeOutThing = setTimeout(() => {
-      setRoleta(lastRoletaSync)
-    }, 5000);
-    timeOutRef.current = timeOutThing;
-    setRoleta(value);
-    sendRoleta(value);
-
-
-  }
 
 
 
@@ -62,18 +40,7 @@ const Home: FC<{}> = () => {
     >
 
       <div className='roleta'>
-        <Space direction='horizontal' >
-          <div className="blinds_container">
-            <div className="blinds" style={{ marginTop: -(200 - roleta * 2) }}>
-              {Array.from(new Array(7)).map((_, index) =>
-                <img src="/assets/blindBlade.svg" alt="roleta" className='rotelta_blade' />
-              )}
-
-            </div>
-          </div>
-          <Slider reverse={true} vertical={true} value={roleta} min={0} max={100} onChange={(val) => setRoleta(val)} style={{ width: 10, height: 200 }} onAfterChange={onFinishAdjust} />
-
-        </Space>
+        <Blinds />
       </div>
 
 
@@ -88,15 +55,7 @@ const Home: FC<{}> = () => {
 
       <div className='svjetlo'>
         <div className="svjetlo_roundrect">
-          <div className="bulb_btn_wrapper">
-            <div className="bubl_btn"
-              onClick={() => { sendSvjetlo(!svjetlo) }}
-              style={{ ...!svjetlo && { backgroundColor: '#b6d7ea' } }}
-            >
-              <img src="/assets/bulb.svg" alt="svjetlo" style={{ height: 100 }} />
-
-            </div>
-          </div>
+          <Lamp />
         </div>
       </div >
 

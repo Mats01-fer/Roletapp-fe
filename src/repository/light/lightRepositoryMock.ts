@@ -11,6 +11,11 @@ export class LightRepositoryMock implements LightRepository {
     this.removeListener = this.removeListener.bind(this);
 
     this.listeners = {};
+    (window as any).nesto = (value: number) => {
+      for (const listener of Object.values(this.listeners)) {
+        listener({ light: value });
+      }
+    }
   }
 
   addListener(listener: LightListener): string {
@@ -21,9 +26,13 @@ export class LightRepositoryMock implements LightRepository {
   }
 
   removeListener(id: string): boolean {
-    if(!this.listeners[id]) return false;
+    if (!this.listeners[id]) return false;
 
     delete this.listeners[id];
     return true;
   }
+
+
 }
+
+
