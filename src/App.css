@@ -130,7 +130,15 @@ height: 60px;
 
 }
 
+.slider_container{
+  position: absolute;
+  margin: 0 auto;
+  top: -110px;
+}
 
+.slider_container path {
+  stroke: #48ACE4;
+}
 
 .bulb_btn_wrapper{
   position: absolute;
@@ -146,6 +154,8 @@ height: 60px;
   background-color: #fff;
 }
 .bubl_btn {
+  z-index: 4;
+
   width: 70%;
   height: 70%;
   border-radius: 50%;

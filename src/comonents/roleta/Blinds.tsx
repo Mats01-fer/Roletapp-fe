@@ -3,7 +3,7 @@ import { Slider, Space } from 'antd';
 import di from '../../di/di';
 
 
-const Blinds: FC<{}> = () => {
+const Blinds: FC<{ setManulaControl: React.Dispatch<React.SetStateAction<boolean>> }> = ({ setManulaControl }) => {
   const { blindsRepository } = di;
 
   const timeOutRef = useRef<NodeJS.Timeout>();
@@ -53,7 +53,10 @@ const Blinds: FC<{}> = () => {
 
         </div>
       </div>
-      <Slider reverse={true} vertical={true} value={roleta} min={0} max={100} onChange={(val) => setRoleta(val)} style={{ width: 10, height: 200 }} onAfterChange={onFinishAdjust} />
+      <Slider reverse={true} vertical={true} value={roleta} min={0} max={100} onChange={(val) => {
+        setRoleta(val);
+        setManulaControl(true);
+      }} style={{ width: 10, height: 200 }} onAfterChange={onFinishAdjust} />
 
     </Space>
 

@@ -5,7 +5,7 @@ import Schedule from '../schedule/Schedule';
 import di from '../../di/di';
 
 
-const Lamp: FC<{}> = () => {
+const Lamp: FC<{ setManulaControl: React.Dispatch<React.SetStateAction<boolean>> }> = ({ setManulaControl }) => {
   const lampRepo = di.lampRepository;
 
 
@@ -37,7 +37,10 @@ const Lamp: FC<{}> = () => {
 
     <div className="bulb_btn_wrapper">
       <div className="bubl_btn"
-        onClick={() => { sendSvjetlo(!svjetlo) }}
+        onClick={() => {
+          sendSvjetlo(!svjetlo);
+          setManulaControl(true);
+        }}
         style={{ ...!svjetlo && { backgroundColor: '#b6d7ea' } }}
       >
         <img src="/assets/bulb.svg" alt="svjetlo" style={{ height: 100 }} />
