@@ -1,8 +1,11 @@
-import { LightListener, LightRepository } from "./lightRepository";
+import { LampObj } from "../../models/LampObj";
+import { wait } from "../../util";
+import { LampListener, LampRepository } from "./lampRepository";
 
-type ListenerStorage = Record<string, LightListener>;
 
-export class LightRepositoryMock implements LightRepository {
+type ListenerStorage = Record<string, LampListener>;
+
+export class LampRepositoryMock implements LampRepository {
   private listeners: ListenerStorage;
   private nextID = 0;
 
@@ -11,14 +14,15 @@ export class LightRepositoryMock implements LightRepository {
     this.removeListener = this.removeListener.bind(this);
 
     this.listeners = {};
-    (window as any).nesto = (value: number) => {
-      for (const listener of Object.values(this.listeners)) {
-        listener({ light: value });
-      }
+  }
+  async send(lampObj: LampObj) {
+    await wait(1000);
+    for (const listener of Object.values(this.listeners)) {
+      listener(lampObj)
     }
   }
 
-  addListener(listener: LightListener): string {
+  addListener(listener: LampListener): string {
     const id = `listener${this.nextID++}`;
     this.listeners[id] = listener;
 
@@ -31,8 +35,4 @@ export class LightRepositoryMock implements LightRepository {
     delete this.listeners[id];
     return true;
   }
-
-
 }
-
-

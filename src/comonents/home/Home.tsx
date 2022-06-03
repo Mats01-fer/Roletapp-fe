@@ -1,59 +1,76 @@
-import React, { FC, useEffect, useMemo, useState } from 'react'
+import { FC, useCallback, useEffect, useState } from 'react'
 import { CalendarOutlined } from '@ant-design/icons';
-import { Button, Slider, Space, Switch } from 'antd';
+import { Button } from 'antd';
 import Schedule from '../schedule/Schedule';
-import { LightRepositoryMock } from '../../repository/light/lightRepositoryMock';
-import { BlindsRepositoryMock } from '../../repository/blinds/blindsRepositoryMock';
+import di from '../../di/di';
+import Lamp from '../lamp/Lamp';
+import Blinds from '../roleta/Blinds';
+import CircularSlider from '@fseehawer/react-circular-slider';
 
 
 const Home: FC<{}> = () => {
-  const lightRepo = useMemo(() => new LightRepositoryMock(), []);
-  const blindsRepo = useMemo(() => new BlindsRepositoryMock(), []);
+
+  const map = (value: number, x1: number, y1: number, x2: number, y2: number) => (value - x1) * (y2 - x2) / (y1 - x1) + x2;
+
+  const { lightRepository: lightRepo, lampRepository, blindsRepository } = di;
+
 
   const [showScheduler, setShowScheduler] = useState(false);
-  const [roleta, setRoleta] = useState(0);
-  const [svjetlo, setSvjetlo] = useState(false);
+  const [sliderValue, setSliderValue] = useState(0);
+  const [light, setlight] = useState(0);
+
+  const [manulaControl, setManulaControl] = useState(false);
+
 
   const sendSchedule = (data: any) => {
     // scheduleRepo.schedule(data);
   }
 
-  const sendRoleta = (value: number) => {
-    blindsRepo.send({ roleta: value });
-  }
 
-  const sendSvjetlo = (state: boolean) => {
-    lightRepo.send({ svjetlo: state });
-  }
+  useEffect(() => {
+    if (manulaControl) return;
+    if (light < sliderValue) {
+      lampRepository.send({ lamp: true });
+      blindsRepository.send({ blinds: light });
+    } else {
+      lampRepository.send({ lamp: false });
+      blindsRepository.send({ blinds: light });
+    }
+  }, [manulaControl, light])
 
 
   useEffect(() => {
-    lightRepo.addListener(({ svjetlo }) => {
-      setSvjetlo(svjetlo);
-    })
 
-    blindsRepo.addListener(({ roleta }) => {
-      setRoleta(roleta);
-    })
-  }, [blindsRepo, lightRepo])
+    lightRepo.addListener(({ light }) => {
+      setlight(light);
+    });
+
+  }, [lightRepo])
+
+
+  useEffect(() => {
+    console.log(manulaControl);
+  }, [manulaControl])
+
 
 
 
 
   return (
-    <div className="App">
+    <div className="App"
+      style={{
+        height: window.innerHeight - 1,
+      }}
+    >
 
       <div className='roleta'>
-        <Space direction='horizontal' className='datetime_picker' >
-          <span>Roleta:</span>
-          <Slider value={roleta} min={0} max={100} onChange={sendRoleta} style={{ width: 150 }} />
-        </Space>
+        <Blinds setManulaControl={setManulaControl} />
       </div>
 
 
 
       <div className='gutter'>
-        <Button onClick={() => setShowScheduler(true)}>
+        <Button onClick={() => setShowScheduler(true)} className="calendar_btn">
           <CalendarOutlined />
         </Button>
       </div>
@@ -61,13 +78,27 @@ const Home: FC<{}> = () => {
 
 
       <div className='svjetlo'>
-        <Space direction='horizontal' className='datetime_picker' >
-          <span>Svjetlo:</span>
-          <Switch
-            checked={svjetlo}
-            onChange={sendSvjetlo} />
-        </Space>
-      </div>
+        <div className="svjetlo_roundrect">
+          <Lamp setManulaControl={setManulaControl} />
+          <div className="slider_container">
+
+            <CircularSlider
+              labelColor="#005a58"
+              knobColor="#1374ac"
+              progressSize={10}
+              trackColor="#eeeeee"
+              trackSize={10}
+              label={''}
+              width={220}
+              value={map(sliderValue, 0, 100, 0, 360)}
+              onChange={(value: any) => {
+                setSliderValue(map(value, 0, 360, 0, 100));
+                setManulaControl(false);
+              }}
+            />
+          </div>
+        </div>
+      </div >
 
 
 
@@ -84,7 +115,7 @@ const Home: FC<{}> = () => {
           </div>
         </div>
       }
-    </div>
+    </div >
   )
 }
 export default Home;

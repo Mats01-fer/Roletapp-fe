@@ -1,3 +1,3 @@
 export type BlindsObj = {
-  roleta: number,
+  blinds: number,
 }

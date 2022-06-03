@@ -15,4 +15,5 @@ export const styles = {
     alignContent: 'center',
     marginTop: '10px',
   },
+
 }

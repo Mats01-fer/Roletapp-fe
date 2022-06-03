@@ -9,8 +9,5 @@ export interface LightRepository {
 
   // return true if the listener was removed, false if it was not
   removeListener(id: string): boolean,
-
-  // sends new object and waits for the returned confirmed state
-  send(lightObj: LightObj): void,
 }
 
