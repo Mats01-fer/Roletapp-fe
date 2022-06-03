@@ -66,3 +66,8 @@ export function subscribe(topic: SubscribeTopics, listener: SupscriptionHandler)
 export function publish<T>(topic: PublishTopics, data: T): Promise<void> {
   return Amplify.PubSub.publish(topic, { state: { desired: data } });
 }
+
+
+(window as any).myAWS = { publish, subscribe };
+
+(window as any).myAWSTopics = PublishTopics;

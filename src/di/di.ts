@@ -1,9 +1,9 @@
 import { BlindsRepository } from "../repository/blinds/blindsRepository"
-import { BlindsRepositoryMock } from "../repository/blinds/blindsRepositoryMock"
+import { BlindsRepositoryImpl } from "../repository/blinds/blindsRepositoryImpl"
 import { LampRepository } from "../repository/lamp/lampRepository"
-import { LampRepositoryMock } from "../repository/lamp/lampRepositoryMock"
+import { LampRepositoryImpl } from "../repository/lamp/lampRepositoryImpl"
 import { LightRepository } from "../repository/light/lightRepository"
-import { LightRepositoryMock } from "../repository/light/lightRepositoryMock"
+import { LightRepositoryImpl } from "../repository/light/lightRepositoryImpl"
 
 export type DI = {
   blindsRepository: BlindsRepository,
@@ -12,9 +12,9 @@ export type DI = {
 }
 
 const di: DI = {
-  blindsRepository: new BlindsRepositoryMock(),
-  lightRepository: new LightRepositoryMock(),
-  lampRepository: new LampRepositoryMock()
+  blindsRepository: new BlindsRepositoryImpl(),
+  lightRepository: new LightRepositoryImpl(),
+  lampRepository: new LampRepositoryImpl()
 }
 
 export default di;

@@ -47,6 +47,6 @@ export class LampRepositoryImpl implements LampRepository {
   }
 
   async send(lampObj: LampObj) {
-    return publish(PublishTopics.BLINDS, lampObj);
+    return publish(PublishTopics.LAMP, lampObj);
   }
 }
