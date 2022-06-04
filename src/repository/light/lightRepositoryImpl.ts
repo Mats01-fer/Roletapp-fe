@@ -21,10 +21,10 @@ export class LightRepositoryImpl implements LightRepository {
   }
 
   private subscribeToRepo(): UnsubscribeHolder {
-    const holder = subscribe(SubscribeTopics.BLINDS, {
+    const holder = subscribe(SubscribeTopics.LIGHT, {
       next: (data: AWSResponse) => {
         if(!data.value.state.reported) return
-        if(!data.value.state.reported.blinds) return
+        if(!data.value.state.reported.light) return
 
         this.notifyListeners(data.value.state.reported as LightObj)
       },

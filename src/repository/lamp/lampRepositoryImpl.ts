@@ -22,10 +22,10 @@ export class LampRepositoryImpl implements LampRepository {
   }
 
   private subscribeToRepo(): UnsubscribeHolder {
-    const holder = subscribe(SubscribeTopics.BLINDS, {
+    const holder = subscribe(SubscribeTopics.LAMP, {
       next: (data: AWSResponse) => {
         if(!data.value.state.reported) return
-        if(!data.value.state.reported.blinds) return
+        if(!data.value.state.reported.lamp) return
 
         this.notifyListeners(data.value.state.reported as LampObj)
       },
