@@ -1,6 +1,4 @@
-import { FC, useEffect, useRef, useState } from 'react'
-import { CalendarOutlined } from '@ant-design/icons';
-import { Button, Slider, Space, Switch } from 'antd';
+import { FC, useEffect, useRef, useState } from 'react';
 import Schedule from '../schedule/Schedule';
 import di from '../../di/di';
 

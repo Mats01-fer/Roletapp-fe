@@ -1,5 +1,5 @@
-import { FC, useEffect, useRef, useState } from 'react'
 import { Slider, Space } from 'antd';
+import { FC, useEffect, useRef, useState } from 'react';
 import di from '../../di/di';
 
 
@@ -8,8 +8,8 @@ const Blinds: FC<{ setManulaControl: React.Dispatch<React.SetStateAction<boolean
 
   const timeOutRef = useRef<NodeJS.Timeout>();
 
-  const [roleta, setRoleta] = useState(0);
-  const [lastRoletaSync, setLastRoletaSync] = useState(0);
+  const [roleta, setRoleta] = useState(100);
+  const [lastRoletaSync, setLastRoletaSync] = useState(100);
 
 
   const sendRoleta = (value: number) => {

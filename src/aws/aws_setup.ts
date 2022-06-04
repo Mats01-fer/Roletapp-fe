@@ -1,5 +1,5 @@
-import { Amplify } from 'aws-amplify';
 import { AWSIoTProvider } from '@aws-amplify/pubsub/lib/Providers';
+import { Amplify } from 'aws-amplify';
 import { PublishTopics, SubscribeTopics } from '../constants';
 
 export interface UnsubscribeHolder {
@@ -64,6 +64,8 @@ export function subscribe(topic: SubscribeTopics, listener: SupscriptionHandler)
 }
 
 export function publish<T>(topic: PublishTopics, data: T): Promise<void> {
+  console.trace("publish", topic);
+
   return Amplify.PubSub.publish(topic, { state: { desired: data } });
 }
 

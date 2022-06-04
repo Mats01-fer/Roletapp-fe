@@ -14,19 +14,28 @@ export class LightRepositoryImpl implements LightRepository {
     this.addListener = this.addListener.bind(this);
     this.removeListener = this.removeListener.bind(this);
     this.notifyListeners = this.notifyListeners.bind(this);
+    this.subscribeToRepo = this.subscribeToRepo.bind(this);
 
     this.listeners = {};
-    this.unsubscribeHolder = subscribe(SubscribeTopics.LIGHT, {
-      next: (data: AWSResponse) => {
-        console.log(data);
+    this.unsubscribeHolder = this.subscribeToRepo()
+  }
 
+  private subscribeToRepo(): UnsubscribeHolder {
+    const holder = subscribe(SubscribeTopics.BLINDS, {
+      next: (data: AWSResponse) => {
         if(!data.value.state.reported) return
-        if(!data.value.state.reported.light) return
+        if(!data.value.state.reported.blinds) return
 
         this.notifyListeners(data.value.state.reported as LightObj)
       },
-      error: (error: AWSError) => console.log(error)
+      error: (error: AWSError) => {
+        console.log(error);
+
+        holder.unsubscribe = this.subscribeToRepo().unsubscribe;
+      }
     });
+
+    return holder;
   }
 
   private notifyListeners(lightObj: LightObj) {

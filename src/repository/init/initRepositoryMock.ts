@@ -12,8 +12,7 @@ export class InitRepositoryMock implements InitRepository {
 
     return {
       lamp: true,
-      blinds: 60,
-      light: 50
+      blinds: 60
     }
   }
 

@@ -15,17 +15,28 @@ export class LampRepositoryImpl implements LampRepository {
     this.removeListener = this.removeListener.bind(this);
     this.send = this.send.bind(this);
     this.notifyListeners = this.notifyListeners.bind(this);
+    this.subscribeToRepo = this.subscribeToRepo.bind(this);
 
     this.listeners = {};
-    this.unsubscribeHolder = subscribe(SubscribeTopics.LAMP, {
+    this.unsubscribeHolder = this.subscribeToRepo()
+  }
+
+  private subscribeToRepo(): UnsubscribeHolder {
+    const holder = subscribe(SubscribeTopics.BLINDS, {
       next: (data: AWSResponse) => {
         if(!data.value.state.reported) return
-        if(!data.value.state.reported.lamp) return
+        if(!data.value.state.reported.blinds) return
 
         this.notifyListeners(data.value.state.reported as LampObj)
       },
-      error: (error: AWSError) => console.log(error)
+      error: (error: AWSError) => {
+        console.log(error);
+
+        holder.unsubscribe = this.subscribeToRepo().unsubscribe;
+      }
     });
+
+    return holder;
   }
 
   private notifyListeners(lampObj: LampObj) {
