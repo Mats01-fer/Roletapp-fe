@@ -6,15 +6,11 @@ export const initialState = {
 
 export enum PublishTopics {
   BLINDS = '$aws/things/BlindsActuator/shadow/update',
-  LAMP = '$aws/things/LampActuator/shadow/update',
-  INIT_BLINDS = '$aws/things/BlindsActuator/shadow/get',
-  INIT_LAMP = '$aws/things/LampActuator/shadow/get',
+  LAMP = '$aws/things/LampActuator/shadow/update'
 }
 
 export enum SubscribeTopics {
   BLINDS = '$aws/things/BlindsActuator/shadow/update/accepted',
   LAMP = '$aws/things/LampActuator/shadow/update/accepted',
-  LIGHT = '$aws/things/LightSensor/shadow/update/accepted',
-  INIT_BLINDS = '$aws/things/BlindsActuator/shadow/update/documents',
-  INIT_LAMP = '$aws/things/LampActuator/shadow/update/documents',
+  LIGHT = '$aws/things/LightSensor/shadow/update/accepted'
 }

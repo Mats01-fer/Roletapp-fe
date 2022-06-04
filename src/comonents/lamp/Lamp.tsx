@@ -1,51 +1,34 @@
-import { FC, useEffect, useRef, useState } from 'react';
-import Schedule from '../schedule/Schedule';
-import di from '../../di/di';
+import { FC, useMemo, useState } from 'react';
+import { LampListener } from 'repository/lamp/lampRepository';
+import { useLampRepository } from '../../hooks';
 
 
 const Lamp: FC<{ setManulaControl: React.Dispatch<React.SetStateAction<boolean>> }> = ({ setManulaControl }) => {
-  const lampRepo = di.lampRepository;
+  const listener = useMemo<LampListener>(() => {
+    return ({ lamp }) => {
+      setSvjetlo(lamp);
+    }
+  }, []);
 
-
+  const sendLamp = useLampRepository(listener);
   const [svjetlo, setSvjetlo] = useState(false);
 
-
   const sendSvjetlo = (state: boolean) => {
-    lampRepo.send({ lamp: state });
+    sendLamp({ lamp: state });
   }
 
-
-  useEffect(() => {
-
-
-
-    lampRepo.addListener(({ lamp }) => {
-      setSvjetlo(lamp);
-    })
-
-
-  }, [lampRepo])
-
-
-
-
-
-
   return (
-
-    <div className="bulb_btn_wrapper">
-      <div className="bubl_btn"
+      <button className="bubl_btn"
         onClick={() => {
           sendSvjetlo(!svjetlo);
           setManulaControl(true);
+          console.log("buttton");
+
         }}
-        style={{ ...!svjetlo && { backgroundColor: '#b6d7ea' } }}
+        style={!svjetlo ? { backgroundColor: '#b6d7ea' } : {}}
       >
-        <img src="/assets/bulb.svg" alt="svjetlo" style={{ height: 100 }} />
-
-      </div>
-    </div>
-
+        <img src="/assets/bulb.svg" alt="svjetlo" style={{ height: 70 }} />
+      </button>
   )
 }
 export default Lamp;

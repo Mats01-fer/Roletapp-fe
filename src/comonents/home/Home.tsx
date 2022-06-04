@@ -1,54 +1,75 @@
 import CircularSlider from '@fseehawer/react-circular-slider';
 import { Spin } from 'antd';
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { LightListener } from 'repository/light/lightRepository';
-import { useInitValues, useLightRepository } from '../../hooks';
+import { useBlindsRepository, useLampRepository, useLightRepository } from '../../hooks';
 import Lamp from '../lamp/Lamp';
 import Blinds from '../roleta/Blinds';
 
+function map(value: number, x1: number, y1: number, x2: number, y2: number) {
+  return (value - x1) * (y2 - x2) / (y1 - x1) + x2;
+}
 
 const Home: FC<{}> = () => {
-
-  const map = (value: number, x1: number, y1: number, x2: number, y2: number) => (value - x1) * (y2 - x2) / (y1 - x1) + x2;
-
   const listener = useMemo<LightListener>(() => {
     return ({ light }) => {
-            setLight(light);
-          }
+      setLoading(false);
+      setLight(light);
+    }
   }, []);
   useLightRepository(listener);
 
-  const [value, error] = useInitValues();
+  const [sliderValue, setSliderValue] = useState(0);
+  const [light, setLight] = useState(-1);
+  const [loading, setLoading] = useState(true);
+  const [manulaControl, setManulaControl] = useState(true);
 
-  const [sliderValue, setSliderValue] = useState(75);
-  const [light, setLight] = useState(0);
+  const timeout = useRef<NodeJS.Timeout>();
 
-  const [manulaControl, setManulaControl] = useState(false);
+  const sendBlinds = useBlindsRepository();
+  const sendLamp = useLampRepository();
 
-  // useEffect(() => {
-  //   if (manulaControl) return;
+  const updateState = useCallback((current: number, desired: number) => {
+    if (current < desired) {
+      sendLamp({ lamp: true });
+      sendBlinds({ blinds: desired });
+    } else {
+      sendLamp({ lamp: false });
+      sendBlinds({ blinds: desired });
+    }
+  }, [sendBlinds, sendLamp]);
 
-  //   if (light < sliderValue) {
-  //     lampRepository.send({ lamp: true });
-  //     blindsRepository.send({ blinds: light });
-  //   } else {
-  //     lampRepository.send({ lamp: false });
-  //     blindsRepository.send({ blinds: light });
-  //   }
-  // }, [manulaControl, light])
+  useEffect(() => {
+console.log(sliderValue);
 
+  }, [sliderValue]);
 
   useEffect(() => {
     console.log(manulaControl);
   }, [manulaControl])
 
+  function handleChange(value: number) {
+    if(light === -1) return;
+    if(!!timeout.current) {
+      clearTimeout(timeout.current)
+    }
+
+    timeout.current = setTimeout(() => {
+      updateState(light, value);
+      timeout.current = undefined;
+    }, 2000);
+
+    setSliderValue(value);
+    setManulaControl(false);
+  }
+
   return (
-    <div className={`App ${!value ? 'loading' : ''}`}
+    <div className={`App ${loading ? 'loading' : ''}`}
       style={{
         height: window.innerHeight - 1,
       }}
     >
-      {!value && (
+      {loading && (
         <Spin className="spinner" size="large" />
       )}
       <div className='roleta'>
@@ -56,9 +77,8 @@ const Home: FC<{}> = () => {
       </div>
       <div className='svjetlo'>
         <div className="svjetlo_roundrect">
-          <Lamp setManulaControl={setManulaControl} />
+          <div className="bulb_btn_wrapper">
           <div className="slider_container">
-
             <CircularSlider
               labelColor="#005a58"
               knobColor="#1374ac"
@@ -66,17 +86,19 @@ const Home: FC<{}> = () => {
               trackColor="#eeeeee"
               trackSize={10}
               label={''}
-              width={220}
-              value={map(sliderValue, 0, 100, 0, 360)}
-              onChange={(value: any) => {
-                setSliderValue(map(value, 0, 360, 0, 100));
-                setManulaControl(false);
-              }}
+              width={200}
+              hideLabelValue={true}
+              min={0}
+              max={100}
+              onChange={handleChange}
             />
+            </div>
+            <Lamp setManulaControl={setManulaControl} />
           </div>
         </div>
       </div >
     </div >
   )
 }
+
 export default Home;

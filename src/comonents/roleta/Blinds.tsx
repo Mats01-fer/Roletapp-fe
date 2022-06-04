@@ -46,7 +46,7 @@ const Blinds: FC<{ setManulaControl: React.Dispatch<React.SetStateAction<boolean
 
     <Space direction='horizontal' >
       <div className="blinds_container">
-        <div className="blinds" style={{ marginTop: -(200 - roleta * 2) }}>
+        <div className="blinds" style={{ transform: `translateY(-${100-roleta}%)` }}>
           {Array.from(new Array(7)).map((_, index) =>
             <img src="/assets/blindBlade.svg" alt="roleta" className='rotelta_blade' key={index} />
           )}
@@ -56,7 +56,10 @@ const Blinds: FC<{ setManulaControl: React.Dispatch<React.SetStateAction<boolean
       <Slider reverse={true} vertical={true} value={roleta} min={0} max={100} onChange={(val) => {
         setRoleta(val);
         setManulaControl(true);
-      }} style={{ width: 10, height: 200 }} onAfterChange={onFinishAdjust} />
+      }} style={{
+        width: 10,
+        height: document.querySelector('.blinds')?.getBoundingClientRect().height
+      }} onAfterChange={onFinishAdjust} />
 
     </Space>
 
