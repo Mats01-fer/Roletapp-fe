@@ -19,7 +19,7 @@ const Home: FC<{}> = () => {
   const [sliderValue, setSliderValue] = useState(0);
   const [light, setLight] = useState(-1);
   const [loading, setLoading] = useState(true);
-  const [manulaControl, setManulaControl] = useState(true);
+  const [manulaControl, setManulaControl] = useState(false);
 
   const timeout = useRef<NodeJS.Timeout>();
 
