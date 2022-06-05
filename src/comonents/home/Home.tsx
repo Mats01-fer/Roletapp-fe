@@ -1,5 +1,4 @@
 import CircularSlider from '@fseehawer/react-circular-slider';
-import { Spin } from 'antd';
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { LightListener } from 'repository/light/lightRepository';
 import { useBlindsRepository, useLampRepository, useLightRepository } from '../../hooks';
@@ -10,7 +9,6 @@ import Blinds from '../roleta/Blinds';
 const Home: FC<{}> = () => {
   const listener = useMemo<LightListener>(() => {
     return ({ light }) => {
-      setLoading(false);
       setLight(light);
     }
   }, []);
@@ -18,8 +16,7 @@ const Home: FC<{}> = () => {
 
   const [sliderValue, setSliderValue] = useState(0);
   const [light, setLight] = useState(-1);
-  const [loading, setLoading] = useState(true);
-  const [manulaControl, setManulaControl] = useState(false);
+  const [manulaControl, setManulaControl] = useState(true);
 
   const timeout = useRef<NodeJS.Timeout>();
 
@@ -59,14 +56,11 @@ const Home: FC<{}> = () => {
   }
 
   return (
-    <div className={`App ${loading ? 'loading' : ''}`}
+    <div className={`App`}
       style={{
         height: window.innerHeight - 1,
       }}
     >
-      {loading && (
-        <Spin className="spinner" size="large" />
-      )}
       <div className='roleta'>
         <Blinds setManulaControl={setManulaControl} />
       </div>
