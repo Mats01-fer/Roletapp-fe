@@ -1,3 +1,4 @@
+import LightSvg from 'light_svg';
 import { FC, useMemo, useState } from 'react';
 import { LampListener } from 'repository/lamp/lampRepository';
 import { useLampRepository } from '../../hooks';
@@ -18,16 +19,15 @@ const Lamp: FC<{ setManulaControl: React.Dispatch<React.SetStateAction<boolean>>
   }
 
   return (
-      <button className="bubl_btn"
+      <button className={`bubl_btn ${svjetlo ? 'on' : 'off'}`}
         onClick={() => {
           sendSvjetlo(!svjetlo);
           setManulaControl(true);
           console.log("buttton");
 
         }}
-        style={!svjetlo ? { backgroundColor: '#b6d7ea' } : {}}
       >
-        <img src="/assets/bulb.svg" alt="svjetlo" style={{ height: 70 }} />
+        <LightSvg fill={svjetlo ? "#fff" : "#48ACE4"} style={{ height: 70 }} />
       </button>
   )
 }

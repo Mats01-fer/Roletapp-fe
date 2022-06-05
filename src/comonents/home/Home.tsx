@@ -75,8 +75,7 @@ const Home: FC<{}> = () => {
           <div className="bulb_btn_wrapper">
           <div className="slider_container">
             <CircularSlider
-              labelColor="#005a58"
-              knobColor="#1374ac"
+              knobColor="#48ACE4"
               progressSize={10}
               trackColor="#eeeeee"
               trackSize={10}
