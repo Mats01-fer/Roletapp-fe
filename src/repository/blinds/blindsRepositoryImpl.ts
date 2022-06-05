@@ -25,7 +25,7 @@ export class BlindsRepositoryImpl implements BlindsRepository {
     const holder = subscribe(SubscribeTopics.BLINDS, {
       next: (data: AWSResponse) => {
         if(!data.value.state.reported) return
-        if(!data.value.state.reported.blinds) return
+        if(data.value.state.reported.blinds === undefined) return
 
         this.notifyListeners(data.value.state.reported as BlindsObj)
       },

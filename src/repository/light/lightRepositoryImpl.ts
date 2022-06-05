@@ -24,7 +24,7 @@ export class LightRepositoryImpl implements LightRepository {
     const holder = subscribe(SubscribeTopics.LIGHT, {
       next: (data: AWSResponse) => {
         if(!data.value.state.reported) return
-        if(!data.value.state.reported.light) return
+        if(data.value.state.reported.light === undefined) return
 
         this.notifyListeners(data.value.state.reported as LightObj)
       },

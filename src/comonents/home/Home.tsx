@@ -6,9 +6,6 @@ import { useBlindsRepository, useLampRepository, useLightRepository } from '../.
 import Lamp from '../lamp/Lamp';
 import Blinds from '../roleta/Blinds';
 
-function map(value: number, x1: number, y1: number, x2: number, y2: number) {
-  return (value - x1) * (y2 - x2) / (y1 - x1) + x2;
-}
 
 const Home: FC<{}> = () => {
   const listener = useMemo<LightListener>(() => {
@@ -40,13 +37,11 @@ const Home: FC<{}> = () => {
   }, [sendBlinds, sendLamp]);
 
   useEffect(() => {
-console.log(sliderValue);
+    if(light === -1) return
+    if(manulaControl) return;
 
-  }, [sliderValue]);
-
-  useEffect(() => {
-    console.log(manulaControl);
-  }, [manulaControl])
+    updateState(light, sliderValue)
+  }, [light]);
 
   function handleChange(value: number) {
     if(light === -1) return;

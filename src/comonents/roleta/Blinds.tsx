@@ -1,11 +1,18 @@
 import { Slider, Space } from 'antd';
-import { FC, useEffect, useRef, useState } from 'react';
-import di from '../../di/di';
+import { useBlindsRepository } from 'hooks';
+import { FC, useMemo, useRef, useState } from 'react';
+import { BlindsListener } from 'repository/blinds/blindsRepository';
 
 
 const Blinds: FC<{ setManulaControl: React.Dispatch<React.SetStateAction<boolean>> }> = ({ setManulaControl }) => {
-  const { blindsRepository } = di;
-
+  const listener = useMemo<BlindsListener>(() => {
+    return ({ blinds }) => {
+      setRoleta(blinds);
+      clearTimeout(timeOutRef.current);
+      setLastRoletaSync(blinds)
+    };
+  }, []);
+  const sendBlinds = useBlindsRepository(listener);
   const timeOutRef = useRef<NodeJS.Timeout>();
 
   const [roleta, setRoleta] = useState(100);
@@ -13,19 +20,8 @@ const Blinds: FC<{ setManulaControl: React.Dispatch<React.SetStateAction<boolean
 
 
   const sendRoleta = (value: number) => {
-    blindsRepository.send({ blinds: value });
+    sendBlinds({ blinds: value });
   }
-
-
-  useEffect(() => {
-
-    blindsRepository.addListener(({ blinds }) => {
-      setRoleta(blinds);
-      clearTimeout(timeOutRef.current);
-      setLastRoletaSync(blinds)
-    })
-  }, [blindsRepository])
-
 
   const onFinishAdjust = (value: number) => {
     clearTimeout(timeOutRef.current);
@@ -35,12 +31,7 @@ const Blinds: FC<{ setManulaControl: React.Dispatch<React.SetStateAction<boolean
     timeOutRef.current = timeOutThing;
     setRoleta(value);
     sendRoleta(value);
-
-
   }
-
-
-
 
   return (
 

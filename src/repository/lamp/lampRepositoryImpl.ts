@@ -25,7 +25,7 @@ export class LampRepositoryImpl implements LampRepository {
     const holder = subscribe(SubscribeTopics.LAMP, {
       next: (data: AWSResponse) => {
         if(!data.value.state.reported) return
-        if(!data.value.state.reported.lamp) return
+        if(data.value.state.reported.lamp === undefined) return
 
         this.notifyListeners(data.value.state.reported as LampObj)
       },
